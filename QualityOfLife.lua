@@ -165,6 +165,18 @@ function UHQOL:DrawBackrops()
     end
 end
 
+local function InitializeUHQOL()
+    UHQOL:BuildDB()
+    UHQOL:BuildOptions()
+    UHQOL:SkipCinematics()
+    UHQOL:AutoLootPlus()
+    UHQOL:AutoDelete()
+    UHQOL:DrawBackrops()
+    UHQOL:CustomizeCharacterPanel()
+    UHQOL:AutoAcceptInvites()
+    UHQOL:AutoRepairSellItems()
+end
+
 function UHQOL:BuildOptions()
     local UHQOLOptions = {
         name = QOL,
@@ -277,17 +289,8 @@ function UHQOL:BuildOptions()
     end
 end
 
-
 UHQOLFrame:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1 == "QualityOfLife" then
-        UHQOL:BuildDB()
-        UHQOL:BuildOptions()
-        UHQOL:SkipCinematics()
-        UHQOL:AutoLootPlus()
-        UHQOL:AutoDelete()
-        UHQOL:DrawBackrops()
-        UHQOL:CustomizeCharacterPanel()
-        UHQOL:AutoAcceptInvites()
-        UHQOL:AutoRepairSellItems()
+        InitializeUHQOL()
     end
 end)
