@@ -108,7 +108,8 @@ function UHQOL:BuildOptions()
                 desc = "Automatically Skips All Cinematics / Movies.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleSkipCinematics = val end,
-                get = function(info) return UHQOLDB.ToggleSkipCinematics end
+                get = function(info) return UHQOLDB.ToggleSkipCinematics end,
+                width = "full",
             },
             ToggleAutoLootPlus = {
                 name = "Auto Loot Plus",
@@ -116,27 +117,31 @@ function UHQOL:BuildOptions()
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleAutoLootPlus = val end,
                 get = function(info) return UHQOLDB.ToggleAutoLootPlus end,
+                width = "full",
             },
             ToggleAutoDelete = {
                 name = "Auto Delete",
                 desc = "Prefils Delete Box.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleAutoDelete = val end,
-                get = function(info) return UHQOLDB.ToggleAutoDelete end
+                get = function(info) return UHQOLDB.ToggleAutoDelete end,
+                width = "full",
             },
             ToggleDrawBackrops = {
                 name = "Draw Backrops",
                 desc = "Draws Backdrops For Details Damage Meter & Details Healing Meter.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleDrawBackrops = val end,
-                get = function(info) return UHQOLDB.ToggleDrawBackrops end
+                get = function(info) return UHQOLDB.ToggleDrawBackrops end,
+                width = "full",
             },
             ToggleCustomizeCharacterPanel = {
                 name = "Customize Character Panel",
                 desc = "Customize Character Panel.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleCustomizeCharacterPanel = val end,
-                get = function(info) return UHQOLDB.ToggleCustomizeCharacterPanel end
+                get = function(info) return UHQOLDB.ToggleCustomizeCharacterPanel end,
+                width = "full",
             },
         }
     }
