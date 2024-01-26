@@ -11,6 +11,7 @@ function UHQOL:BuildDB()
         ToggleAutoLootPlus = true,
         ToggleAutoDelete = true,
         ToggleDrawBackrops = true,
+        ToggleCustomizeCharacterPanel = true,
     } end
     for k, v in pairs(UHQOLDB) do
         if UHQOL[k] == nil then
@@ -43,6 +44,31 @@ function UHQOL:AutoDelete()
     if UHQOLDB.ToggleAutoDelete then
         print(QOL .. ": AutoDelete |cFF40FF40Loaded|r")
         hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(s) s.editBox:SetText(DELETE_ITEM_CONFIRM_STRING) end)
+    end
+end
+
+function UHQOL:CustomizeCharacterPanel()
+    function UHQOL:SetFont(obj, font, size, style, sR, sG, sB, sA, sX, sY, r, g, b, a)
+        if not obj then return end
+        if style == 'NONE' or not style then style = '' end
+        local shadow = strsub(style, 0, 6) == 'SHADOW'
+        if shadow then style = strsub(style, 7) end -- shadow isnt a real style
+        obj:SetFont(font, size, style)
+        obj:SetShadowColor(sR or 0, sG or 0, sB or 0, sA or (shadow and (style == '' and 1 or 0.6)) or 0)
+        obj:SetShadowOffset(sX or (shadow and 1) or 0, sY or (shadow and -1) or 0)
+        if r and g and b then
+            obj:SetTextColor(r, g, b)
+        end
+        if a then
+            obj:SetAlpha(a)
+        end
+    end
+    if UHQOLDB.ToggleCustomizeCharacterPanel then
+        UHQOL:SetFont(CharacterLevelText, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, nil, nil, nil, nil)
+        UHQOL:SetFont(CharacterFrameTitleText, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, nil, nil, nil, nil)
+        UHQOL:SetFont(CharacterStatsPane.ItemLevelCategory.Title, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, RAID_CLASS_COLORS[select(2, UnitClass("player"))].r, RAID_CLASS_COLORS[select(2, UnitClass("player"))].g, RAID_CLASS_COLORS[select(2, UnitClass("player"))].b, 1.0)
+        UHQOL:SetFont(CharacterStatsPane.AttributesCategory.Title, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, RAID_CLASS_COLORS[select(2, UnitClass("player"))].r, RAID_CLASS_COLORS[select(2, UnitClass("player"))].g, RAID_CLASS_COLORS[select(2, UnitClass("player"))].b, 1.0)
+        UHQOL:SetFont(CharacterStatsPane.EnhancementsCategory.Title, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, RAID_CLASS_COLORS[select(2, UnitClass("player"))].r, RAID_CLASS_COLORS[select(2, UnitClass("player"))].g, RAID_CLASS_COLORS[select(2, UnitClass("player"))].b, 1.0)
     end
 end
 
@@ -105,6 +131,13 @@ function UHQOL:BuildOptions()
                 set = function(info, val) UHQOLDB.ToggleDrawBackrops = val end,
                 get = function(info) return UHQOLDB.ToggleDrawBackrops end
             },
+            ToggleCustomizeCharacterPanel = {
+                name = "Customize Character Panel",
+                desc = "Customize Character Panel.",
+                type = "toggle",
+                set = function(info, val) UHQOLDB.ToggleCustomizeCharacterPanel = val end,
+                get = function(info) return UHQOLDB.ToggleCustomizeCharacterPanel end
+            },
         }
     }
     AC:RegisterOptionsTable("QualityOfLife", UHQOLOptions)
@@ -127,5 +160,6 @@ UHQOLFrame:SetScript("OnEvent", function(self, event, arg1)
         UHQOL:AutoLootPlus()
         UHQOL:AutoDelete()
         UHQOL:DrawBackrops()
+        UHQOL:CustomizeCharacterPanel()
     end
 end)
