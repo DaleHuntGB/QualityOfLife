@@ -63,6 +63,7 @@ function UHQOL:CustomizeCharacterPanel()
             obj:SetAlpha(a)
         end
     end
+
     if UHQOLDB.ToggleCustomizeCharacterPanel then
         UHQOL:SetFont(CharacterLevelText, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, nil, nil, nil, nil)
         UHQOL:SetFont(CharacterFrameTitleText, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, nil, nil, nil, nil)
@@ -104,47 +105,60 @@ function UHQOL:BuildOptions()
         type = 'group',
         args = {
             ToggleSkipCinematics = {
-                name = "Skip Cinematics",
+                name = "Skip Cinematics [|cFFFF4040Reload Required|r]",
                 desc = "Automatically Skips All Cinematics / Movies.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleSkipCinematics = val end,
                 get = function(info) return UHQOLDB.ToggleSkipCinematics end,
                 width = "full",
+                order = 5,
             },
             ToggleAutoLootPlus = {
-                name = "Auto Loot Plus",
+                name = "Auto Loot Plus [|cFFFF4040Reload Required|r]",
                 desc = "Faster Auto Looting.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleAutoLootPlus = val end,
                 get = function(info) return UHQOLDB.ToggleAutoLootPlus end,
                 width = "full",
+                order = 2,
             },
             ToggleAutoDelete = {
-                name = "Auto Delete",
+                name = "Auto Delete [|cFFFF4040Reload Required|r]",
                 desc = "Prefils Delete Box.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleAutoDelete = val end,
                 get = function(info) return UHQOLDB.ToggleAutoDelete end,
                 width = "full",
+                order = 1,
             },
             ToggleDrawBackrops = {
-                name = "Draw Backrops",
+                name = "Draw Backrops [|cFFFF4040Reload Required|r]",
                 desc = "Draws Backdrops For Details Damage Meter & Details Healing Meter.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleDrawBackrops = val end,
                 get = function(info) return UHQOLDB.ToggleDrawBackrops end,
                 width = "full",
+                order = 4,
             },
             ToggleCustomizeCharacterPanel = {
-                name = "Customize Character Panel",
+                name = "Customize Character Panel [|cFFFF4040Reload Required|r]",
                 desc = "Customize Character Panel.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleCustomizeCharacterPanel = val end,
                 get = function(info) return UHQOLDB.ToggleCustomizeCharacterPanel end,
                 width = "full",
+                order = 3,
             },
-        }
+            Reload = {
+                name = "|cFF00ADB5Save Settings|r",
+                type = "execute",
+                func = function() ReloadUI() end,
+                width = "full",
+                order = 100,
+            },
+        },
     }
+
     AC:RegisterOptionsTable("QualityOfLife", UHQOLOptions)
     ACD:AddToBlizOptions("QualityOfLife", QOL)
 
