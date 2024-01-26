@@ -1,4 +1,5 @@
 ## Title: |cFF00ADB5Quality Of Life|r
+## Interface: 100205
 ## Author: Unhalted
 ## Version: 1.0.0
 ## DefaultState: Enabled

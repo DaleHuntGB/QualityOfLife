@@ -12,6 +12,10 @@ function UHQOL:BuildDB()
         ToggleAutoDelete = true,
         ToggleDrawBackrops = true,
         ToggleCustomizeCharacterPanel = true,
+        ToggleAutoAcceptInvites = true,
+        ToggleAutoAcceptFriends = true,
+        ToggleAutoAcceptGuildInvites = true,
+        ToggleAutoRepairSellItems = true
     } end
     for k, v in pairs(UHQOLDB) do
         if UHQOL[k] == nil then
@@ -19,6 +23,69 @@ function UHQOL:BuildDB()
         end
     end
 end
+
+function UHQOL:AcceptInvite()
+    AcceptGroup()
+    for i = 1, STATICPOPUP_NUMDIALOGS do
+        local dialog = _G["StaticPopup" .. i]
+        if dialog.which == "PARTY_INVITE" then
+            dialog.inviteAccepted = 1
+            break
+        end
+    end
+    StaticPopup_Hide("PARTY_INVITE")
+end
+
+function UHQOL:AutoAcceptInvites()
+    local AutoAcceptInvitesFrame = CreateFrame("Frame")
+    AutoAcceptInvitesFrame:RegisterEvent("PARTY_INVITE_REQUEST")
+    local _, numFriends = BNGetNumFriends()
+    local _, _, numGuildMembers = GetNumGuildMembers()
+    local autoAcceptBNet = UHQOLDB.ToggleAutoAcceptFriends
+    local autoAcceptGuild = UHQOLDB.ToggleAutoAcceptGuildInvites
+    AutoAcceptInvitesFrame:SetScript("OnEvent", function(event, playerName) 
+        if autoAcceptBNet then
+            for i = 1, numFriends do
+                local isBNetFriend = C_BattleNet.GetFriendAccountInfo(i).isBattleTagFriend
+                local characterName = C_BattleNet.GetFriendAccountInfo(i).gameAccountInfo.characterName
+                if isBNetFriend and playerName == characterName then
+                    UHQOL:AcceptInvite()
+                end
+            end
+        end
+        if autoAcceptGuild then
+            print(autoAcceptGuild)
+            for i = 1, numGuildMembers do
+                local characterName = GetGuildRosterInfo(i)
+                if playerName == characterName:gsub("%-.*", "") then
+                    UHQOL:AcceptInvite()
+                end
+            end
+        end
+    end)
+    print(QOL .. ": AutoAcceptInvites |cFF40FF40Loaded|r")
+end
+
+function UHQOL:AutoRepairSellItems()
+    if UHQOLDB.ToggleAutoRepairSellItems then
+        local AutoRepairSellItemsFrame = CreateFrame("Frame")
+        AutoRepairSellItemsFrame:RegisterEvent("MERCHANT_SHOW")
+        if CanMerchantRepair() then
+            RepairAllItems()
+        end
+        for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+            local slots = C_Container.GetContainerNumSlots(container)
+            for slot=1, slots do
+                local info = C_Container.GetContainerItemInfo(container, slot)
+                if info and info.quality == 0 and not info.hasNoValue then
+                    C_Container.UseContainerItem(container, slot)
+                end
+            end
+        end 
+        print(QOL .. ": AutoRepair & Sell Items |cFF40FF40Loaded|r")
+    end
+end
+
 
 function UHQOL:SkipCinematics()
     if UHQOLDB.ToggleSkipCinematics then
@@ -104,23 +171,35 @@ function UHQOL:BuildOptions()
         handler = UHQOL,
         type = 'group',
         args = {
-            ToggleSkipCinematics = {
-                name = "Skip Cinematics [|cFFFF4040Reload Required|r]",
-                desc = "Automatically Skips All Cinematics / Movies.",
+            ToggleAutoAcceptInvites = {
+                name = "Auto Accept Invites",
+                desc = "Automatically Accepts Invites From Friends & Guild Members.",
                 type = "toggle",
-                set = function(info, val) UHQOLDB.ToggleSkipCinematics = val end,
-                get = function(info) return UHQOLDB.ToggleSkipCinematics end,
+                set = function(info, val) UHQOLDB.ToggleAutoAcceptInvites = val end,
+                get = function(info) return UHQOLDB.ToggleAutoAcceptInvites end,
                 width = "full",
-                order = 5,
+                order = 1,
+                disabled = function() return C_AddOns.IsAddOnLoaded("ElvUI") end
             },
-            ToggleAutoLootPlus = {
-                name = "Auto Loot Plus [|cFFFF4040Reload Required|r]",
-                desc = "Faster Auto Looting.",
+            ToggleAutoAcceptFriends = {
+                name = "Auto Accept Friends",
+                desc = "Automatically Accepts Invites From Friends.",
                 type = "toggle",
-                set = function(info, val) UHQOLDB.ToggleAutoLootPlus = val end,
-                get = function(info) return UHQOLDB.ToggleAutoLootPlus end,
+                set = function(info, val) UHQOLDB.ToggleAutoAcceptFriends = val end,
+                get = function(info) return UHQOLDB.ToggleAutoAcceptFriends end,
                 width = "full",
                 order = 2,
+                disabled = function() return not UHQOLDB.ToggleAutoAcceptInvites end,
+            },
+            ToggleAutoAcceptGuildInvites = {
+                name = "Auto Accept Guild Invites",
+                desc = "Automatically Accepts Invites From Guild Members.",
+                type = "toggle",
+                set = function(info, val) UHQOLDB.ToggleAutoAcceptGuildInvites = val end,
+                get = function(info) return UHQOLDB.ToggleAutoAcceptGuildInvites end,
+                width = "full",
+                order = 3,
+                disabled = function() return not UHQOLDB.ToggleAutoAcceptInvites end,
             },
             ToggleAutoDelete = {
                 name = "Auto Delete [|cFFFF4040Reload Required|r]",
@@ -129,16 +208,26 @@ function UHQOL:BuildOptions()
                 set = function(info, val) UHQOLDB.ToggleAutoDelete = val end,
                 get = function(info) return UHQOLDB.ToggleAutoDelete end,
                 width = "full",
-                order = 1,
-            },
-            ToggleDrawBackrops = {
-                name = "Draw Backrops [|cFFFF4040Reload Required|r]",
-                desc = "Draws Backdrops For Details Damage Meter & Details Healing Meter.",
-                type = "toggle",
-                set = function(info, val) UHQOLDB.ToggleDrawBackrops = val end,
-                get = function(info) return UHQOLDB.ToggleDrawBackrops end,
-                width = "full",
                 order = 4,
+            },
+            ToggleAutoLootPlus = {
+                name = "Auto Loot Plus [|cFFFF4040Reload Required|r]",
+                desc = "Faster Auto Looting.",
+                type = "toggle",
+                set = function(info, val) UHQOLDB.ToggleAutoLootPlus = val end,
+                get = function(info) return UHQOLDB.ToggleAutoLootPlus end,
+                width = "full",
+                order = 5,
+            },
+            ToggleAutoRepairSellItems = {
+                name = "Auto Repair & Sell Items",
+                desc = "Automatically Repairs & Sells Items.",
+                type = "toggle",
+                set = function(info, val) UHQOLDB.ToggleAutoRepairSellItems = val end,
+                get = function(info) return UHQOLDB.ToggleAutoRepairSellItems end,
+                width = "full",
+                order = 6,
+                disabled = function() return C_AddOns.IsAddOnLoaded("ElvUI") end
             },
             ToggleCustomizeCharacterPanel = {
                 name = "Customize Character Panel [|cFFFF4040Reload Required|r]",
@@ -147,7 +236,25 @@ function UHQOL:BuildOptions()
                 set = function(info, val) UHQOLDB.ToggleCustomizeCharacterPanel = val end,
                 get = function(info) return UHQOLDB.ToggleCustomizeCharacterPanel end,
                 width = "full",
-                order = 3,
+                order = 7,
+            },
+            ToggleDrawBackrops = {
+                name = "Draw Backrops [|cFFFF4040Reload Required|r]",
+                desc = "Draws Backdrops For Details Damage Meter & Details Healing Meter.",
+                type = "toggle",
+                set = function(info, val) UHQOLDB.ToggleDrawBackrops = val end,
+                get = function(info) return UHQOLDB.ToggleDrawBackrops end,
+                width = "full",
+                order = 8,
+            },
+            ToggleSkipCinematics = {
+                name = "Skip Cinematics [|cFFFF4040Reload Required|r]",
+                desc = "Automatically Skips All Cinematics / Movies.",
+                type = "toggle",
+                set = function(info, val) UHQOLDB.ToggleSkipCinematics = val end,
+                get = function(info) return UHQOLDB.ToggleSkipCinematics end,
+                width = "full",
+                order = 9,
             },
             Reload = {
                 name = "|cFF00ADB5Save Settings|r",
@@ -180,5 +287,7 @@ UHQOLFrame:SetScript("OnEvent", function(self, event, arg1)
         UHQOL:AutoDelete()
         UHQOL:DrawBackrops()
         UHQOL:CustomizeCharacterPanel()
+        UHQOL:AutoAcceptInvites()
+        UHQOL:AutoRepairSellItems()
     end
 end)
