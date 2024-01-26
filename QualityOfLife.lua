@@ -17,11 +17,11 @@ function UHQOL:BuildDB()
         ToggleAutoAcceptGuildInvites = true,
         ToggleAutoRepairSellItems = true
     } end
-    for k, v in pairs(UHQOLDB) do
-        if UHQOL[k] == nil then
-            UHQOL[k] = v
+    for setting, default in pairs(UHQOLDB) do
+        if UHQOL[setting] == nil then
+            UHQOL[setting] = default
         end
-    end
+    end    
 end
 
 function UHQOL:AcceptInvite()
