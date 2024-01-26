@@ -1,0 +1,9 @@
+## Title: |cFF00ADB5Quality Of Life|r
+## Author: Unhalted
+## Version: 1.0.0
+## DefaultState: Enabled
+## IconTexture: Interface\AddOns\QualityOfLife\Libraries\QOL.tga
+## SavedVariables: UHQOLDB
+
+Libraries\Embeds.xml
+QualityOfLife.lua

@@ -1,0 +1,4 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="AceConfig-3.0\AceConfig-3.0.xml"/>
+    <Script file="LibStub\LibStub.lua"/>
+</Ui>
