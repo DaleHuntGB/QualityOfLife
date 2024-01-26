@@ -24,46 +24,49 @@ function UHQOL:BuildDB()
     end    
 end
 
-function UHQOL:AcceptInvite()
-    AcceptGroup()
-    for i = 1, STATICPOPUP_NUMDIALOGS do
-        local dialog = _G["StaticPopup" .. i]
-        if dialog.which == "PARTY_INVITE" then
-            dialog.inviteAccepted = 1
-            break
-        end
-    end
-    StaticPopup_Hide("PARTY_INVITE")
-end
+
 
 function UHQOL:AutoAcceptInvites()
-    local AutoAcceptInvitesFrame = CreateFrame("Frame")
-    AutoAcceptInvitesFrame:RegisterEvent("PARTY_INVITE_REQUEST")
-    local _, numFriends = BNGetNumFriends()
-    local _, _, numGuildMembers = GetNumGuildMembers()
-    local autoAcceptBNet = UHQOLDB.ToggleAutoAcceptFriends
-    local autoAcceptGuild = UHQOLDB.ToggleAutoAcceptGuildInvites
-    AutoAcceptInvitesFrame:SetScript("OnEvent", function(event, playerName) 
-        if autoAcceptBNet then
-            for i = 1, numFriends do
-                local isBNetFriend = C_BattleNet.GetFriendAccountInfo(i).isBattleTagFriend
-                local characterName = C_BattleNet.GetFriendAccountInfo(i).gameAccountInfo.characterName
-                if isBNetFriend and playerName == characterName then
-                    UHQOL:AcceptInvite()
+    if UHQOLDB.ToggleAutoAcceptInvites then
+        local function AcceptInvite()
+            AcceptGroup()
+            for i = 1, STATICPOPUP_NUMDIALOGS do
+                local dialog = _G["StaticPopup" .. i]
+                if dialog.which == "PARTY_INVITE" then
+                    dialog.inviteAccepted = 1
+                    break
                 end
             end
+            StaticPopup_Hide("PARTY_INVITE")
         end
-        if autoAcceptGuild then
-            print(autoAcceptGuild)
-            for i = 1, numGuildMembers do
-                local characterName = GetGuildRosterInfo(i)
-                if playerName == characterName:gsub("%-.*", "") then
-                    UHQOL:AcceptInvite()
+        local AutoAcceptInvitesFrame = CreateFrame("Frame")
+        AutoAcceptInvitesFrame:RegisterEvent("PARTY_INVITE_REQUEST")
+        local _, numFriends = BNGetNumFriends()
+        local _, _, numGuildMembers = GetNumGuildMembers()
+        local autoAcceptBNet = UHQOLDB.ToggleAutoAcceptFriends
+        local autoAcceptGuild = UHQOLDB.ToggleAutoAcceptGuildInvites
+        AutoAcceptInvitesFrame:SetScript("OnEvent", function(event, playerName) 
+            if autoAcceptBNet then
+                for i = 1, numFriends do
+                    local isBNetFriend = C_BattleNet.GetFriendAccountInfo(i).isBattleTagFriend
+                    local characterName = C_BattleNet.GetFriendAccountInfo(i).gameAccountInfo.characterName
+                    if isBNetFriend and playerName == characterName then
+                        AcceptInvite()
+                    end
                 end
             end
-        end
-    end)
-    print(QOL .. ": AutoAcceptInvites |cFF40FF40Loaded|r")
+            if autoAcceptGuild then
+                print(autoAcceptGuild)
+                for i = 1, numGuildMembers do
+                    local characterName = GetGuildRosterInfo(i)
+                    if playerName == characterName:gsub("%-.*", "") then
+                        AcceptInvite()
+                    end
+                end
+            end
+        end)
+        print(QOL .. ": Auto Accept Invites |cFF40FF40Loaded|r")
+    end
 end
 
 function UHQOL:AutoRepairSellItems()
