@@ -12,10 +12,10 @@ function UHQOL:BuildDB()
         ToggleAutoDelete = true,
         ToggleDrawBackrops = true,
         ToggleCustomizeCharacterPanel = true,
-        ToggleAutoAcceptInvites = true,
-        ToggleAutoAcceptFriends = true,
-        ToggleAutoAcceptGuildInvites = true,
-        ToggleAutoRepairSellItems = true
+        ToggleAutoAcceptInvites = false,
+        ToggleAutoAcceptFriends = false,
+        ToggleAutoAcceptGuildInvites = false,
+        ToggleAutoRepairSellItems = false,
     } end
     for setting, default in pairs(UHQOLDB) do
         if UHQOL[setting] == nil then
@@ -23,8 +23,6 @@ function UHQOL:BuildDB()
         end
     end    
 end
-
-
 
 function UHQOL:AutoAcceptInvites()
     if UHQOLDB.ToggleAutoAcceptInvites then
