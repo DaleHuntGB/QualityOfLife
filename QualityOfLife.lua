@@ -231,7 +231,7 @@ function UHQOL:BuildOptions()
                 disabled = function() return not UHQOLDB.ToggleAutoAcceptInvites end,
             },
             ToggleAutoDelete = {
-                name = "Auto Delete [|cFFFF4040Reload Required|r]",
+                name = "Auto Delete",
                 desc = "Prefils Delete Box.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleAutoDelete = val end,
@@ -240,7 +240,7 @@ function UHQOL:BuildOptions()
                 order = 4,
             },
             ToggleAutoLootPlus = {
-                name = "Auto Loot Plus [|cFFFF4040Reload Required|r]",
+                name = "Auto Loot Plus",
                 desc = "Faster Auto Looting.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleAutoLootPlus = val end,
@@ -259,8 +259,8 @@ function UHQOL:BuildOptions()
                 disabled = function() return ElvUI end
             },
             ToggleCustomizeCharacterPanel = {
-                name = "Customize Character Panel [|cFFFF4040Reload Required|r]",
-                desc = "Customize Character Panel.",
+                name = "Customize Character Panel",
+                desc = "Colours Elements, Improves Font Appearance.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleCustomizeCharacterPanel = val end,
                 get = function(info) return UHQOLDB.ToggleCustomizeCharacterPanel end,
@@ -268,7 +268,7 @@ function UHQOL:BuildOptions()
                 order = 7,
             },
             ToggleDrawBackrops = {
-                name = "Draw Backrops [|cFFFF4040Reload Required|r]",
+                name = "Draw Backrops",
                 desc = "Draws Backdrops For Details Damage Meter & Details Healing Meter.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleDrawBackrops = val end,
@@ -277,8 +277,8 @@ function UHQOL:BuildOptions()
                 order = 8,
             },
             ToggleSkipCinematics = {
-                name = "Skip Cinematics [|cFFFF4040Reload Required|r]",
-                desc = "Automatically Skips All Cinematics / Movies.",
+                name = "Skip Cinematics",
+                desc = "Automatically Skips All Cinematics / Movies Instantly.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleSkipCinematics = val end,
                 get = function(info) return UHQOLDB.ToggleSkipCinematics end,
@@ -286,7 +286,7 @@ function UHQOL:BuildOptions()
                 order = 9,
             },
             ToggleStopAutoPlacingSpells = {
-                name = "Stop Automatically Placing Spells [|cFFFF4040Reload Required|r]",
+                name = "Stop Automatically Placing Spells",
                 desc = "Stops Automatically Placing Spells.",
                 type = "toggle",
                 set = function(info, val) UHQOLDB.ToggleStopAutoPlacingSpells = val end,
@@ -312,6 +312,9 @@ function UHQOL:BuildOptions()
         InterfaceOptionsFrame_OpenToCategory(QOL)
         InterfaceOptionsFrame_OpenToCategory(QOL)
     end
+
+    SLASH_RELOADUI1 = "/rl"
+    SlashCmdList.RELOADUI = ReloadUI
 end
 
 UHQOLFrame:SetScript("OnEvent", function(self, event, arg1)
