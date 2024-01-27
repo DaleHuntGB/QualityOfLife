@@ -4,6 +4,9 @@ UHQOLFrame:RegisterEvent("ADDON_LOADED")
 local QOL = C_AddOns.GetAddOnMetadata("QualityOfLife", "Title")
 local AC = LibStub("AceConfig-3.0")
 local ACD = LibStub("AceConfigDialog-3.0")
+local QOLGUI = LibStub("AceGUI-3.0")
+local GUIW = 750
+local GUIH = 800
 
 function UHQOL:BuildDB()
     if not UHQOLDB then UHQOLDB = {
@@ -283,7 +286,7 @@ function UHQOL:BuildOptions()
                 get = function(info) return UHQOLDB.ToggleStopAutoPlacingSpells end,
                 width = "full",
                 order = 10,
-            },   
+            },
             Reload = {
                 name = "|cFF00ADB5Save Settings|r",
                 type = "execute",
@@ -296,7 +299,6 @@ function UHQOL:BuildOptions()
 
     AC:RegisterOptionsTable("QualityOfLife", UHQOLOptions)
     ACD:AddToBlizOptions("QualityOfLife", QOL)
-
     SLASH_QUALITYOFLIFE1 = "/qol"
     SLASH_QUALITYOFLIFE2 = "/qualityoflife"
     SlashCmdList["QUALITYOFLIFE"] = function(msg)
