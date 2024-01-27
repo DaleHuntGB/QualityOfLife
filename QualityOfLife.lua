@@ -7,6 +7,7 @@ local ACD = LibStub("AceConfigDialog-3.0")
 local QOLGUI = LibStub("AceGUI-3.0")
 local GUIW = 750
 local GUIH = 800
+local ElvUI = C_AddOns.IsAddOnLoaded("ElvUI")
 
 function UHQOL:BuildDB()
     if not UHQOLDB then UHQOLDB = {
@@ -30,7 +31,7 @@ end
 
 function UHQOL:AutoAcceptInvites()
     if UHQOLDB.ToggleAutoAcceptInvites then
-        if C_AddOns.IsAddOnLoaded("ElvUI") then UHQOLDB.ToggleAutoAcceptInvites = false UHQOLDB.ToggleAutoAcceptFriends = false UHQOLDB.ToggleAutoAcceptGuildInvites = false end
+        if ElvUI then UHQOLDB.ToggleAutoAcceptInvites = false UHQOLDB.ToggleAutoAcceptFriends = false UHQOLDB.ToggleAutoAcceptGuildInvites = false end
         local function AcceptInvite()
             AcceptGroup()
             for i = 1, STATICPOPUP_NUMDIALOGS do
@@ -75,7 +76,7 @@ end
 
 function UHQOL:AutoRepairSellItems()
     if UHQOLDB.ToggleAutoRepairSellItems then
-        if C_AddOns.IsAddOnLoaded("ElvUI") then UHQOLDB.ToggleAutoRepairSellItems = false end 
+        if ElvUI then UHQOLDB.ToggleAutoRepairSellItems = false end 
         local AutoRepairSellItemsFrame = CreateFrame("Frame")
         AutoRepairSellItemsFrame:RegisterEvent("MERCHANT_SHOW")
         AutoRepairSellItemsFrame:SetScript("OnEvent", function(event, ...)
@@ -207,7 +208,7 @@ function UHQOL:BuildOptions()
                 get = function(info) return UHQOLDB.ToggleAutoAcceptInvites end,
                 width = "full",
                 order = 1,
-                disabled = function() return C_AddOns.IsAddOnLoaded("ElvUI") end
+                disabled = function() return ElvUI end
             },
             ToggleAutoAcceptFriends = {
                 name = "Auto Accept Friends",
@@ -255,7 +256,7 @@ function UHQOL:BuildOptions()
                 get = function(info) return UHQOLDB.ToggleAutoRepairSellItems end,
                 width = "full",
                 order = 6,
-                disabled = function() return C_AddOns.IsAddOnLoaded("ElvUI") end
+                disabled = function() return ElvUI end
             },
             ToggleCustomizeCharacterPanel = {
                 name = "Customize Character Panel [|cFFFF4040Reload Required|r]",
