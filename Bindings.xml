@@ -1,5 +1,8 @@
 <Bindings>
-    <Binding category = "BINDING_HEADER_QOL" name = "Hide ActionBars [OOC]">
+    <Binding category = "BINDING_HEADER_QOL" name = "|cFF00ADB5ElvUI|r: Hide ActionBars [OOC]">
       local a,b={1,2,3,4},unpack(ElvUI);for c,d in pairs(a)do local e=b.db.actionbar["bar"..d].visibility;b.db.actionbar["bar"..d].visibility=e=="hide"and"[petbattle]hide;show"or"hide"b.ActionBars:PositionAndSizeBar("bar"..d)end
+    </Binding>
+    <Binding category = "BINDING_HEADER_QOL" name = "|cFF00ADB5BT4|r: Hide ActionBars [OOC]">
+      local function t(n) Bartender4.Bar.barregistry[n]:SetVisibilityOption("always",not Bartender4.Bar.barregistry[n]:GetVisibilityOption("always")) end t("1") t("2") t("3") t("4")
     </Binding>
 </Bindings>
