@@ -1,0 +1,5 @@
+<Bindings>
+    <Binding category = "BINDING_HEADER_QOL" name = "Hide ActionBars [OOC]">
+      local a,b={1,2,3,4},unpack(ElvUI);for c,d in pairs(a)do local e=b.db.actionbar["bar"..d].visibility;b.db.actionbar["bar"..d].visibility=e=="hide"and"[petbattle]hide;show"or"hide"b.ActionBars:PositionAndSizeBar("bar"..d)end
+    </Binding>
+</Bindings>

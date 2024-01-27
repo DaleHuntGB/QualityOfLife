@@ -16,12 +16,13 @@ function UHQOL:BuildDB()
         ToggleAutoAcceptFriends = false,
         ToggleAutoAcceptGuildInvites = false,
         ToggleAutoRepairSellItems = false,
+        ToggleStopAutoPlacingSpells = true,
     } end
     for setting, default in pairs(UHQOLDB) do
         if UHQOL[setting] == nil then
             UHQOL[setting] = default
         end
-    end    
+    end
 end
 
 function UHQOL:AutoAcceptInvites()
@@ -63,7 +64,6 @@ function UHQOL:AutoAcceptInvites()
                 end
             end
         end)
-        print(QOL .. ": Auto Accept Invites |cFF40FF40Loaded|r")
     end
 end
 
@@ -83,17 +83,14 @@ function UHQOL:AutoRepairSellItems()
                 end
             end
         end 
-        print(QOL .. ": AutoRepair & Sell Items |cFF40FF40Loaded|r")
     end
 end
-
 
 function UHQOL:SkipCinematics()
     if UHQOLDB.ToggleSkipCinematics then
         local SkipCinematicsFrame = CreateFrame("Frame")
         SkipCinematicsFrame:RegisterEvent("PLAY_MOVIE")
         SkipCinematicsFrame:RegisterEvent("CINEMATIC_START")
-        print(QOL .. ": SkipCinematics |cFF40FF40Loaded|r")
         MovieFrame_PlayMovie = function(...) GameMovieFinished() end
         CinematicFrame:HookScript("OnShow", function(self, ...)	CinematicFrame_CancelCinematic() end)
     end
@@ -103,14 +100,12 @@ function UHQOL:AutoLootPlus()
     if UHQOLDB.ToggleAutoLootPlus then
         local AutoLootPlus = CreateFrame("Frame")
         AutoLootPlus:RegisterEvent("LOOT_READY")
-        print(QOL .. ": AutoLootPlus |cFF40FF40Loaded|r")
         AutoLootPlus:SetScript("OnEvent", function() if GetCVarBool("autoLootDefault") ~= IsModifiedClick("AUTOLOOTTOGGLE") then for i = GetNumLootItems(), 1, -1 do LootSlot(i) end end end)
     end
 end
 
 function UHQOL:AutoDelete()
     if UHQOLDB.ToggleAutoDelete then
-        print(QOL .. ": AutoDelete |cFF40FF40Loaded|r")
         hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(s) s.editBox:SetText(DELETE_ITEM_CONFIRM_STRING) end)
     end
 end
@@ -166,6 +161,16 @@ function UHQOL:DrawBackrops()
     end
 end
 
+function UHQOL:StopAutoPlacingSpells()
+    if UHQOLDB.ToggleStopAutoPlacingSpells then
+        if GetCVar("AutoPushSpellToActionBar") == 1 then
+            SetCVar("AutoPushSpellToActionBar", 0)
+        else
+            return
+        end
+    end
+end
+
 local function InitializeUHQOL()
     UHQOL:BuildDB()
     UHQOL:BuildOptions()
@@ -176,6 +181,7 @@ local function InitializeUHQOL()
     UHQOL:CustomizeCharacterPanel()
     UHQOL:AutoAcceptInvites()
     UHQOL:AutoRepairSellItems()
+    UHQOL:StopAutoPlacingSpells()
 end
 
 function UHQOL:BuildOptions()
@@ -269,6 +275,15 @@ function UHQOL:BuildOptions()
                 width = "full",
                 order = 9,
             },
+            ToggleStopAutoPlacingSpells = {
+                name = "Stop Automatically Placing Spells [|cFFFF4040Reload Required|r]",
+                desc = "Stops Automatically Placing Spells.",
+                type = "toggle",
+                set = function(info, val) UHQOLDB.ToggleStopAutoPlacingSpells = val end,
+                get = function(info) return UHQOLDB.ToggleStopAutoPlacingSpells end,
+                width = "full",
+                order = 10,
+            },   
             Reload = {
                 name = "|cFF00ADB5Save Settings|r",
                 type = "execute",

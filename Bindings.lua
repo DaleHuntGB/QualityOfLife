@@ -1,0 +1,3 @@
+local GlobalAddonName, QOL = ...
+BINDING_HEADER_QOL = "|cFF00ADB5Quality Of Life|r"
+BINDING_NAME_QOLHIDEBARS = "Hide ActionBars [OOC]"

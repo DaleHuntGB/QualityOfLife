@@ -1,10 +1,11 @@
 ## Title: |cFF00ADB5Quality Of Life|r
 ## Interface: 100205
-## Author: Unhalted
+## Author: |cFF00ADB5Unhalted|r - Twisting Nether [EU]
 ## Version: 1.0.0
 ## DefaultState: Enabled
 ## IconTexture: Interface\AddOns\QualityOfLife\Libraries\QOL.tga
 ## SavedVariables: UHQOLDB
 
 Libraries\Embeds.xml
+Bindings.lua
 QualityOfLife.lua
