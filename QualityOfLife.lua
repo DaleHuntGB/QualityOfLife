@@ -30,6 +30,7 @@ end
 
 function UHQOL:AutoAcceptInvites()
     if UHQOLDB.ToggleAutoAcceptInvites then
+        if C_AddOns.IsAddOnLoaded("ElvUI") then UHQOLDB.ToggleAutoAcceptInvites = false UHQOLDB.ToggleAutoAcceptFriends = false UHQOLDB.ToggleAutoAcceptGuildInvites = false end
         local function AcceptInvite()
             AcceptGroup()
             for i = 1, STATICPOPUP_NUMDIALOGS do
@@ -43,49 +44,54 @@ function UHQOL:AutoAcceptInvites()
         end
         local AutoAcceptInvitesFrame = CreateFrame("Frame")
         AutoAcceptInvitesFrame:RegisterEvent("PARTY_INVITE_REQUEST")
-        local _, numFriends = BNGetNumFriends()
-        local _, _, numGuildMembers = GetNumGuildMembers()
-        local autoAcceptBNet = UHQOLDB.ToggleAutoAcceptFriends
-        local autoAcceptGuild = UHQOLDB.ToggleAutoAcceptGuildInvites
-        AutoAcceptInvitesFrame:SetScript("OnEvent", function(event, playerName) 
-            if autoAcceptBNet then
-                for i = 1, numFriends do
-                    local isBNetFriend = C_BattleNet.GetFriendAccountInfo(i).isBattleTagFriend
-                    local characterName = C_BattleNet.GetFriendAccountInfo(i).gameAccountInfo.characterName
-                    if isBNetFriend and playerName == characterName then
-                        AcceptInvite()
+        AutoAcceptInvitesFrame:SetScript("OnEvent", function(event, playerName)
+            local _, numFriends = BNGetNumFriends()
+            local _, _, numGuildMembers = GetNumGuildMembers()
+            local autoAcceptBNet = UHQOLDB.ToggleAutoAcceptFriends
+            local autoAcceptGuild = UHQOLDB.ToggleAutoAcceptGuildInvites
+            AutoAcceptInvitesFrame:SetScript("OnEvent", function(event, playerName) 
+                if autoAcceptBNet then
+                    for i = 1, numFriends do
+                        local isBNetFriend = C_BattleNet.GetFriendAccountInfo(i).isBattleTagFriend
+                        local characterName = C_BattleNet.GetFriendAccountInfo(i).gameAccountInfo.characterName
+                        if isBNetFriend and playerName == characterName then
+                            AcceptInvite()
+                        end
                     end
                 end
-            end
-            if autoAcceptGuild then
-                print(autoAcceptGuild)
-                for i = 1, numGuildMembers do
-                    local characterName = GetGuildRosterInfo(i)
-                    if playerName == characterName:gsub("%-.*", "") then
-                        AcceptInvite()
+                if autoAcceptGuild then
+                    print(autoAcceptGuild)
+                    for i = 1, numGuildMembers do
+                        local characterName = GetGuildRosterInfo(i)
+                        if playerName == characterName:gsub("%-.*", "") then
+                            AcceptInvite()
+                        end
                     end
                 end
-            end
+            end)
         end)
     end
 end
 
 function UHQOL:AutoRepairSellItems()
     if UHQOLDB.ToggleAutoRepairSellItems then
+        if C_AddOns.IsAddOnLoaded("ElvUI") then UHQOLDB.ToggleAutoRepairSellItems = false end 
         local AutoRepairSellItemsFrame = CreateFrame("Frame")
         AutoRepairSellItemsFrame:RegisterEvent("MERCHANT_SHOW")
-        if CanMerchantRepair() then
-            RepairAllItems()
-        end
-        for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
-            local slots = C_Container.GetContainerNumSlots(container)
-            for slot=1, slots do
-                local info = C_Container.GetContainerItemInfo(container, slot)
-                if info and info.quality == 0 and not info.hasNoValue then
-                    C_Container.UseContainerItem(container, slot)
-                end
+        AutoRepairSellItemsFrame:SetScript("OnEvent", function(event, ...)
+            if CanMerchantRepair() then
+                RepairAllItems()
             end
-        end 
+            for container=BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+                local slots = C_Container.GetContainerNumSlots(container)
+                for slot=1, slots do
+                    local info = C_Container.GetContainerItemInfo(container, slot)
+                    if info and info.quality == 0 and not info.hasNoValue then
+                        C_Container.UseContainerItem(container, slot)
+                    end
+                end
+            end 
+        end)
     end
 end
 
