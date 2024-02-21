@@ -4,9 +4,6 @@ UHQOLFrame:RegisterEvent("ADDON_LOADED")
 local QOL = C_AddOns.GetAddOnMetadata("QualityOfLife", "Title")
 local AC = LibStub("AceConfig-3.0")
 local ACD = LibStub("AceConfigDialog-3.0")
-local QOLGUI = LibStub("AceGUI-3.0")
-local GUIW = 750
-local GUIH = 800
 local ElvUI = C_AddOns.IsAddOnLoaded("ElvUI")
 
 function UHQOL:BuildDB()
@@ -21,6 +18,7 @@ function UHQOL:BuildDB()
         ToggleAutoAcceptGuildInvites = false,
         ToggleAutoRepairSellItems = false,
         ToggleStopAutoPlacingSpells = true,
+        ToggleHideTalkingHeadFrame = true,
     } end
     for setting, default in pairs(UHQOLDB) do
         if UHQOL[setting] == nil then
@@ -71,6 +69,12 @@ function UHQOL:AutoAcceptInvites()
                 end
             end)
         end)
+    end
+end
+
+function UHQOL:HideTalkingHeadFrame()
+    if UHQOLDB.ToggleHideTalkingHeadFrame then
+        TalkingHeadFrame:SetScript("OnShow", function(self) self:Hide() end)
     end
 end
 
@@ -140,9 +144,9 @@ function UHQOL:CustomizeCharacterPanel()
     if UHQOLDB.ToggleCustomizeCharacterPanel then
         UHQOL:SetFont(CharacterLevelText, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, nil, nil, nil, nil)
         UHQOL:SetFont(CharacterFrameTitleText, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, nil, nil, nil, nil)
-        UHQOL:SetFont(CharacterStatsPane.ItemLevelCategory.Title, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, RAID_CLASS_COLORS[select(2, UnitClass("player"))].r, RAID_CLASS_COLORS[select(2, UnitClass("player"))].g, RAID_CLASS_COLORS[select(2, UnitClass("player"))].b, 1.0)
-        UHQOL:SetFont(CharacterStatsPane.AttributesCategory.Title, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, RAID_CLASS_COLORS[select(2, UnitClass("player"))].r, RAID_CLASS_COLORS[select(2, UnitClass("player"))].g, RAID_CLASS_COLORS[select(2, UnitClass("player"))].b, 1.0)
-        UHQOL:SetFont(CharacterStatsPane.EnhancementsCategory.Title, "Fonts\\FRIZQT__.ttf", 12, "OUTLINE", 0, 0, 0, 0, 0, 0, RAID_CLASS_COLORS[select(2, UnitClass("player"))].r, RAID_CLASS_COLORS[select(2, UnitClass("player"))].g, RAID_CLASS_COLORS[select(2, UnitClass("player"))].b, 1.0)
+        UHQOL:SetFont(CharacterStatsPane.ItemLevelCategory.Title, "Fonts\\FRIZQT__.ttf", 14, "OUTLINE", 0, 0, 0, 0, 0, 0, RAID_CLASS_COLORS[select(2, UnitClass("player"))].r, RAID_CLASS_COLORS[select(2, UnitClass("player"))].g, RAID_CLASS_COLORS[select(2, UnitClass("player"))].b, 1.0)
+        UHQOL:SetFont(CharacterStatsPane.AttributesCategory.Title, "Fonts\\FRIZQT__.ttf", 14, "OUTLINE", 0, 0, 0, 0, 0, 0, RAID_CLASS_COLORS[select(2, UnitClass("player"))].r, RAID_CLASS_COLORS[select(2, UnitClass("player"))].g, RAID_CLASS_COLORS[select(2, UnitClass("player"))].b, 1.0)
+        UHQOL:SetFont(CharacterStatsPane.EnhancementsCategory.Title, "Fonts\\FRIZQT__.ttf", 14, "OUTLINE", 0, 0, 0, 0, 0, 0, RAID_CLASS_COLORS[select(2, UnitClass("player"))].r, RAID_CLASS_COLORS[select(2, UnitClass("player"))].g, RAID_CLASS_COLORS[select(2, UnitClass("player"))].b, 1.0)
     end
 end
 
@@ -192,6 +196,7 @@ local function InitializeUHQOL()
     UHQOL:AutoAcceptInvites()
     UHQOL:AutoRepairSellItems()
     UHQOL:StopAutoPlacingSpells()
+    UHQOL:HideTalkingHeadFrame()
 end
 
 function UHQOL:BuildOptions()
@@ -276,6 +281,15 @@ function UHQOL:BuildOptions()
                 width = "full",
                 order = 8,
             },
+            ToggleHideTalkingHeadFrame = {
+                name = "Hide Talking Head Frame",
+                desc = "Hides The Talking Head Frame.",
+                type = "toggle",
+                set = function(info, val) UHQOLDB.ToggleHideTalkingHeadFrame = val end,
+                get = function(info) return UHQOLDB.ToggleHideTalkingHeadFrame end,
+                width = "full",
+                order = 9,
+            },
             ToggleSkipCinematics = {
                 name = "Skip Cinematics",
                 desc = "Automatically Skips All Cinematics / Movies Instantly.",
@@ -283,7 +297,7 @@ function UHQOL:BuildOptions()
                 set = function(info, val) UHQOLDB.ToggleSkipCinematics = val end,
                 get = function(info) return UHQOLDB.ToggleSkipCinematics end,
                 width = "full",
-                order = 9,
+                order = 10,
             },
             ToggleStopAutoPlacingSpells = {
                 name = "Stop Automatically Placing Spells",
@@ -292,7 +306,7 @@ function UHQOL:BuildOptions()
                 set = function(info, val) UHQOLDB.ToggleStopAutoPlacingSpells = val end,
                 get = function(info) return UHQOLDB.ToggleStopAutoPlacingSpells end,
                 width = "full",
-                order = 10,
+                order = 11,
             },
             Reload = {
                 name = "|cFF00ADB5Save Settings|r",
