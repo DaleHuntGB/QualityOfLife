@@ -5,4 +5,7 @@
     <Binding category = "BINDING_HEADER_QOL" name = "|cFF00ADB5BT4|r: Hide ActionBars [OOC]">
       local function t(n) Bartender4.Bar.barregistry[n]:SetVisibilityOption("always",not Bartender4.Bar.barregistry[n]:GetVisibilityOption("always")) end t("1") t("2") t("3") t("4")
     </Binding>
+    <Binding category = "BINDING_HEADER_QOL" name = "Quick Leave Party">
+      C_PartyInfo.LeaveParty()
+    </Binding>
 </Bindings>
