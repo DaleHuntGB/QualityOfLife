@@ -74,6 +74,7 @@ end
 
 function UHQOL:HideTalkingHeadFrame()
     if UHQOLDB.ToggleHideTalkingHeadFrame then
+        local TalkingHeadFrame = CreateFrame("Frame")
         TalkingHeadFrame:SetScript("OnShow", function(self) self:Hide() end)
     end
 end
