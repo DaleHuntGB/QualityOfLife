@@ -19,6 +19,8 @@ function UHQOL:BuildDB()
         ToggleAutoRepairSellItems = false,
         ToggleStopAutoPlacingSpells = true,
         ToggleHideTalkingHeadFrame = true,
+        ToggleRemoveBuffs = true,
+        BuffsToRemove = {},
     } end
     for setting, default in pairs(UHQOLDB) do
         if UHQOL[setting] == nil then
@@ -192,6 +194,44 @@ function UHQOL:StopAutoPlacingSpells()
     end
 end
 
+function UHQOL:RemoveBuffs()
+    local BuffsToRemove = {
+        ["A Cultivator's Colors"]               = 394005,
+        ["Rockin' Mining Gear"]                 = 394006,
+        ["Dressed To Kill"]                     = 394011,
+        ["Artist's Duds"]                       = 394016,
+        ["Spark of Madness"]                    = 394003,
+        ["Suited For Smithing"]                 = 388658,
+        ["A Looker's Charm"]                    = 394008,
+        ["Ready To Build"]                      = 394007,
+        ["An Eye For Shine"]                    = 394015,
+        ["Sculpting Leather Finery"]            = 394001,
+        ["Wrapped Up In Weaving"]               = 391312,
+        ["What's Cookin', Good Lookin'?"]       = 391775,
+    }
+    if UHQOLDB.ToggleRemoveBuffs then
+        if not UHQOLDB.BuffsToRemove then UHQOLDB.BuffsToRemove = BuffsToRemove end
+        local RemoveBuffsFrame = CreateFrame("Frame")
+        RemoveBuffsFrame:RegisterEvent("UNIT_AURA")
+        RemoveBuffsFrame:SetScript("OnEvent", function(self, event, ...)
+            if event == "UNIT_AURA" then
+                local unit = ...
+                if unit == "player" then
+                    for i = 1, 40 do  -- Check each buff slot
+                        local _, _, _, _, _, _, _, _, _, spellID = UnitAura("player", i)
+                        for _, buffSpellID in pairs(UHQOLDB.BuffsToRemove) do
+                            if spellID == buffSpellID then
+                                CancelUnitBuff("player", i)
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end
+
 local function InitializeUHQOL()
     UHQOL:BuildDB()
     UHQOL:BuildOptions()
@@ -204,6 +244,7 @@ local function InitializeUHQOL()
     UHQOL:AutoRepairSellItems()
     UHQOL:StopAutoPlacingSpells()
     UHQOL:HideTalkingHeadFrame()
+    UHQOL:RemoveBuffs()
 end
 
 function UHQOL:BuildOptions()
@@ -297,6 +338,55 @@ function UHQOL:BuildOptions()
                 width = "full",
                 order = 9,
             },
+            ToggleRemoveBuffs = {
+                name = "Toggle Remove Buffs",
+                desc = "Buffs Being Removed\n- Profession Buffs.",
+                type = "toggle",
+                set = function(info, val) UHQOLDB.ToggleRemoveBuffs = val end,
+                get = function(info) return UHQOLDB.ToggleRemoveBuffs end,
+                width = "full",
+                order = 10,
+            },
+            AddBuffToRemove = {
+                name = "Add Buff To Remove",
+                desc = "Add SpellID To Remove Buff Automatically.",
+                type = "input",
+                width = 1.9,
+                set = function(info, val) 
+                    local spellID = tonumber(val)
+                    if spellID then
+                        local spellName = GetSpellInfo(spellID) or ""
+                        UHQOLDB.BuffsToRemove[spellName] = spellID 
+                        print("|cFF40FF40Added|r: " .. spellName .. ": |cFF00ADB5" .. spellID .. "|r")
+                    end
+                end,
+                get = function(info) return nil end,
+                order = 11,
+            },
+            RemoveBuff = {
+                name = "Remove Buff",
+                desc = "Remove SpellID To Stop Buff Being Removed.",
+                type = "input",
+                width = 1.89,
+                set = function(info, val) 
+                    local spellID = tonumber(val)
+                    if spellID then
+                        local spellName = GetSpellInfo(spellID) or ""
+                        UHQOLDB.BuffsToRemove[spellName] = nil
+                        print("|cFFFF4040Removed|r: " .. spellName .. ": |cFF00ADB5" .. spellID .. "|r")
+                    end
+                end,
+                get = function(info) return nil end,
+                order = 12,
+            },
+            ShowRemovedBuffs = {
+                name = "|cFF00ADB5Buffs Being Removed|r",
+                desc = "Prints Buffs Currently Being Removed.",
+                type = "execute",
+                width = "full",
+                func = function() for buff, spellID in pairs(UHQOLDB.BuffsToRemove) do print(buff .. ": " .. "|cFF00ADB5" .. spellID .. "|r") end end,
+                order = 13,
+            },  
             ToggleSkipCinematics = {
                 name = "Skip Cinematics",
                 desc = "Automatically Skips All Cinematics / Movies Instantly.",
@@ -304,7 +394,7 @@ function UHQOL:BuildOptions()
                 set = function(info, val) UHQOLDB.ToggleSkipCinematics = val end,
                 get = function(info) return UHQOLDB.ToggleSkipCinematics end,
                 width = "full",
-                order = 10,
+                order = 14,
             },
             ToggleStopAutoPlacingSpells = {
                 name = "Stop Automatically Placing Spells",
@@ -313,7 +403,7 @@ function UHQOL:BuildOptions()
                 set = function(info, val) UHQOLDB.ToggleStopAutoPlacingSpells = val end,
                 get = function(info) return UHQOLDB.ToggleStopAutoPlacingSpells end,
                 width = "full",
-                order = 11,
+                order = 15,
             },
             Reload = {
                 name = "|cFF00ADB5Save Settings|r",
